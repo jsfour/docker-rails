@@ -45,5 +45,5 @@ test:
     RAILS_ENV: test
 
 bootstrap:
-  build: .
-  command: rails new .
+  <<: *base
+  command: rails new . --force
