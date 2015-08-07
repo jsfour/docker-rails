@@ -46,4 +46,4 @@ test:
 
 bootstrap:
   <<: *base
-  command: rails new . --force
+  command: rails new . --force -d mysql
