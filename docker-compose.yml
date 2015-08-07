@@ -10,34 +10,40 @@ redis:
   ports:
     - "6379:6379"
 
-sidekiq:
+base: &base
   build: .
+  volumes:
+    - .:/myapp
+
+sidekiq:
+  <<: *base
   command: bundle exec sidekiq
   links:
     - db
     - redis
 
 development: &dev_base
-  build: .
+  <<: *base
   command: bundle exec rails s -p 4040 -b '0.0.0.0' -P tmp/pids/app.pid
-  volumes:
-    - .:/myapp
   ports:
     - "4040:4040"
   environment:
     DATABASE_NAME: app_development
     RACK_ENV: development
     RAILS_ENV: development
-
   links:
     - db
     - redis
 
 test:
-  <<: *dev_base
+  <<: *base
   ports: []
   command: bundle exec rspec
   environment:
     DATABASE_NAME: app_test
     RACK_ENV: test
     RAILS_ENV: test
+
+bootstrap:
+  build: .
+  command: rails new .
